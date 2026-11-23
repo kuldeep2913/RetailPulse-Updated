@@ -1,0 +1,361 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+/* ==========================================================================
+   RetailPulse design tokens (keep in sync with core/config.py COLORS)
+   ========================================================================== */
+:root {
+  --rp-bg: #ECECE5;
+  --rp-card: #FFFFFF;
+  --rp-ink: #15151A;
+  --rp-text: #15151A;
+  --rp-muted: #6D6D75;
+  --rp-border: #E4E4DA;
+  --rp-soft: #EEF0E6;
+  --rp-lime: #C8F23A;
+  --rp-violet: #8F84E0;
+  --rp-violet-soft: #D8CFF7;
+  --rp-salmon: #F6A58F;
+  --rp-green-ink: #2F7A5A;
+  --rp-green-soft: #DDF3E8;
+  --rp-amber-ink: #9A4A33;
+  --rp-amber-soft: #FDE6DF;
+  --rp-red-ink: #A8402A;
+  --rp-red-soft: #FADDD5;
+  --rp-radius: 26px;
+  --rp-font: "Plus Jakarta Sans", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+[data-testid="stElementContainer"]:has(.rp-inject) { display: none; }
+
+/* ==========================================================================
+   App shell
+   ========================================================================== */
+html { scroll-behavior: smooth; }
+.stApp { background: var(--rp-bg); color: var(--rp-text); font-family: var(--rp-font); }
+.stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp p, .stApp label, .stApp button, .stApp input, .stApp li { font-family: var(--rp-font); }
+
+#MainMenu, footer, [data-testid="stDecoration"], [data-testid="stStatusWidget"],
+[data-testid="stToolbarActions"], [data-testid="stMainMenu"], [data-testid="stAppDeployButton"] { display: none !important; }
+
+/* ==========================================================================
+   Top bar
+   The header is KEPT (it hosts the "open sidebar" button on phones/tablets and
+   whenever the sidebar is collapsed). It is made transparent + click-through so it
+   never covers content; only the buttons inside it receive clicks.
+   ========================================================================== */
+[data-testid="stHeader"] {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  height: 3.25rem;
+  pointer-events: none;
+}
+[data-testid="stHeader"] button,
+[data-testid="stHeader"] a,
+[data-testid="stExpandSidebarButton"],
+[data-testid="stSidebarCollapsedControl"] { pointer-events: auto; }
+
+/* Re-open button: always visible, styled like a small card */
+[data-testid="stExpandSidebarButton"],
+[data-testid="stSidebarCollapsedControl"] button {
+  background: var(--rp-card) !important;
+  color: var(--rp-ink) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 6px rgba(21,21,26,.12) !important;
+}
+[data-testid="stHeaderLogo"], [data-testid="stHeader"] img { max-height: 2.4rem; width: auto; }
+
+/* ==========================================================================
+   Main content area
+   ========================================================================== */
+[data-testid="stMainBlockContainer"], .block-container {
+  max-width: 1280px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 3.25rem clamp(.9rem, 3vw, 2rem) 3rem !important;
+  overflow-x: clip;               /* safety net: never show a horizontal page scrollbar */
+}
+
+/* Let flex/grid children shrink instead of pushing the page wider (main cause of overflow) */
+[data-testid="stColumn"], [data-testid="stVerticalBlock"], [data-testid="stElementContainer"],
+[data-testid="stLayoutWrapper"], [data-testid="stPlotlyChart"], [data-testid="stHtml"] { min-width: 0 !important; max-width: 100%; }
+.js-plotly-plot, .plotly, .plot-container, .svg-container { max-width: 100% !important; }
+
+/* ==========================================================================
+   Sidebar navigation
+   Only styling here: width/transform/collapse behaviour is left to Streamlit so
+   the sidebar can open and close properly.
+   ========================================================================== */
+[data-testid="stSidebar"] { background: var(--rp-card); border-right: 1px solid var(--rp-border); }
+[data-testid="stSidebar"][aria-expanded="true"] { max-width: min(320px, 86vw); }
+[data-testid="stSidebarContent"] { overflow-x: hidden; }
+
+/* Brand: st.logo() output (the logo image already contains the product name) */
+[data-testid="stSidebarHeader"] {
+  display: flex; align-items: center; justify-content: space-between; gap: .5rem;
+  padding: 1.1rem 1rem .6rem 1.1rem !important;
+  margin-bottom: 0 !important;
+}
+[data-testid="stSidebarHeader"] a, [data-testid="stSidebarHeader"] > div { min-width: 0; }
+[data-testid="stSidebarHeader"] img {
+  width: auto !important; height: auto !important;
+  max-width: 100% !important; max-height: 3.4rem !important;
+  object-fit: contain !important;
+}
+
+/* Nav links */
+[data-testid="stSidebarNav"] { padding-top: .4rem; }
+[data-testid="stSidebarNavLink"] {
+  display: flex; align-items: center; gap: .65rem;
+  padding: .6rem .9rem;
+  margin: 2px .6rem;
+  border-radius: 12px;
+  color: var(--rp-muted);
+  font-family: var(--rp-font);
+  font-size: .9rem; font-weight: 500;
+  text-decoration: none;
+  background: transparent;
+  transition: background .15s ease, color .15s ease;
+}
+[data-testid="stSidebarNavLink"] span { color: inherit; overflow: hidden; text-overflow: ellipsis; }
+[data-testid="stSidebarNavLink"]:hover { background: var(--rp-soft); color: var(--rp-ink); }
+[data-testid="stSidebarNavLink"][aria-current="page"] {
+  background: var(--rp-ink); color: #fff; font-weight: 700;
+  box-shadow: 0 2px 8px rgba(21,21,26,.18);
+}
+[data-testid="stSidebarNavLink"][aria-current="page"] span { color: #fff; }
+[data-testid="stSidebarNavLink"][aria-current="page"] [data-testid="stIconMaterial"] { color: var(--rp-lime); opacity: 1; }
+[data-testid="stSidebarNavLink"] [data-testid="stIconMaterial"] { font-size: 20px; opacity: .8; }
+
+/* Collapse button: keep it clean, and on laptops/desktops the sidebar stays put
+   (delete this block if you want users to be able to hide it there too). */
+[data-testid="stSidebarCollapseButton"] { color: var(--rp-muted); }
+@media (min-width: 1025px) { [data-testid="stSidebarCollapseButton"] { display: none !important; } }
+
+/* ==========================================================================
+   Page header + sections
+   ========================================================================== */
+.rp-page-header { margin: 0 0 1.4rem; }
+.rp-page-header h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); line-height: 1.1; font-weight: 700; letter-spacing: -0.03em; color: var(--rp-ink); margin: 0; padding: 0; }
+.rp-page-header p { margin: .5rem 0 0; color: var(--rp-muted); font-size: 1rem; }
+
+.rp-section { margin: 2.2rem 0 .9rem; scroll-margin-top: 5rem; }
+.rp-section h2 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; color: var(--rp-ink); margin: 0; padding: 0; }
+.rp-section p { margin: .25rem 0 0; color: var(--rp-muted); font-size: .9rem; }
+.rp-note { color: var(--rp-muted); font-size: .82rem; margin: .1rem 0 0; line-height: 1.5; }
+
+/* ==========================================================================
+   Cards and the filter bar
+   ========================================================================== */
+[class*="st-key-rp-card-"], .st-key-rp-filters {
+  background: var(--rp-card); border: 0; border-radius: var(--rp-radius); box-shadow: none; padding: 1.4rem 1.5rem;
+}
+.st-key-rp-filters { margin-bottom: 1.25rem; padding: 1rem 1.4rem .6rem; border-radius: 22px; }
+
+.rp-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: .5rem 1rem; margin-bottom: .35rem; min-width: 0; }
+.rp-card-head > div { min-width: 0; }
+.rp-card-head h3 { font-size: 1.05rem; font-weight: 700; color: var(--rp-ink); margin: 0; padding: 0; letter-spacing: -0.01em; }
+.rp-card-head p { margin: .2rem 0 0; font-size: .82rem; color: var(--rp-muted); }
+.rp-card-tag { font-size: .72rem; font-weight: 700; color: var(--rp-ink); background: var(--rp-lime); padding: .25rem .65rem; border-radius: 999px; white-space: nowrap; }
+
+.rp-range { display: flex; flex-direction: column; gap: .2rem; padding-bottom: .55rem; }
+.rp-range span { font-size: .78rem; font-weight: 600; color: var(--rp-muted); }
+.rp-range strong { font-size: .92rem; font-weight: 700; color: var(--rp-ink); }
+
+.rp-icon {
+  font-family: "Material Symbols Rounded", "Material Symbols Outlined", sans-serif; font-weight: 400; font-style: normal;
+  font-size: 20px; line-height: 1; letter-spacing: normal; text-transform: none; white-space: nowrap;
+  display: inline-block; direction: ltr; font-feature-settings: "liga"; -webkit-font-smoothing: antialiased; vertical-align: middle; user-select: none;
+}
+
+/* ==========================================================================
+   KPI cards: first card dark, second lime, the rest white
+   ========================================================================== */
+.rp-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 1rem; margin-bottom: .25rem; }
+.rp-kpi { background: var(--rp-card); border-radius: var(--rp-radius); padding: 1.3rem 1.5rem 1.2rem; min-width: 0; display: flex; flex-direction: column; }
+.rp-kpi.tone-dark { background: var(--rp-ink); color: #fff; }
+.rp-kpi.tone-lime { background: var(--rp-lime); color: var(--rp-ink); }
+.rp-kpi.tone-vio { background: var(--rp-violet-soft); color: var(--rp-ink); }
+.rp-kpi-top { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.rp-kpi-label { font-size: .84rem; font-weight: 600; color: var(--rp-muted); }
+.tone-dark .rp-kpi-label { color: #B8B8C0; }
+.tone-lime .rp-kpi-label { color: #4A5A10; }
+.tone-vio .rp-kpi-label { color: #55507A; }
+.rp-kpi-icon { width: 34px; height: 34px; border-radius: 12px; background: var(--rp-soft); color: var(--rp-ink); display: inline-flex; align-items: center; justify-content: center; flex: none; }
+.tone-dark .rp-kpi-icon { background: rgba(255,255,255,.12); color: var(--rp-lime); }
+.tone-lime .rp-kpi-icon, .tone-vio .rp-kpi-icon { background: rgba(21,21,26,.1); }
+.rp-kpi-icon .rp-icon { font-size: 19px; }
+.rp-kpi-value { margin-top: .55rem; font-size: clamp(1.6rem, 2.6vw, 2.15rem); line-height: 1.1; font-weight: 700; letter-spacing: -0.03em;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.rp-kpi-foot { margin-top: .55rem; display: flex; align-items: center; gap: .5rem; min-height: 1.4rem; flex-wrap: wrap; }
+.rp-kpi-hint { font-size: .78rem; color: var(--rp-muted); }
+.tone-dark .rp-kpi-hint { color: #B8B8C0; }
+.tone-lime .rp-kpi-hint { color: #4A5A10; }
+.rp-delta { display: inline-flex; align-items: center; gap: 2px; font-size: .78rem; font-weight: 700; padding: .12rem .5rem .12rem .3rem; border-radius: 999px; }
+.rp-delta .rp-icon { font-size: 14px; }
+.rp-delta.up { color: var(--rp-green-ink); background: var(--rp-green-soft); }
+.rp-delta.down { color: var(--rp-red-ink); background: var(--rp-red-soft); }
+.tone-dark .rp-delta.up { background: var(--rp-lime); color: var(--rp-ink); }
+
+/* Overview hero cards (3 across) with a mini visual under the value */
+.rp-hero { display: grid; gap: 1rem; }
+.rp-hero .rp-kpi { min-height: 200px; }
+.rp-kpi-row { display: flex; align-items: flex-start; justify-content: space-between; gap: .6rem; flex-wrap: wrap; }
+.rp-pill { display: inline-block; font-size: .72rem; font-weight: 700; padding: .25rem .65rem; border-radius: 999px; background: var(--rp-lime); color: var(--rp-ink); white-space: nowrap; }
+.rp-pill.dark { background: var(--rp-ink); color: var(--rp-lime); }
+.rp-pill.soft { background: var(--rp-soft); color: var(--rp-ink); }
+.rp-mini { display: flex; align-items: flex-end; gap: 6px; height: 84px; margin: auto 0 .5rem; padding-top: 1rem; }
+.rp-mini b { flex: 1; border-radius: 7px; background: #3A3A42; min-height: 4px; }
+.rp-mini b.v { background: var(--rp-violet); }
+.rp-mini b.l { background: var(--rp-lime); }
+.rp-mini b.p { background: transparent; border: 1.5px dashed var(--rp-lime); }
+.rp-spark { display: flex; align-items: flex-end; gap: 3px; height: 70px; margin: auto 0 .7rem; padding-top: 1rem; }
+.rp-spark b { flex: 1; border-radius: 4px 4px 2px 2px; background: rgba(21,21,26,.82); min-height: 6px; }
+.rp-axis { display: flex; justify-content: space-between; font-size: .74rem; font-weight: 600; color: #B8B8C0; gap: .5rem; }
+.rp-segbar { display: flex; height: 11px; gap: 2px; border-radius: 9px; overflow: hidden; margin: auto 0 .9rem; }
+.rp-segbar i { display: block; min-width: 4px; }
+.rp-legend { display: flex; flex-wrap: wrap; gap: .35rem 1rem; font-size: .76rem; font-weight: 600; color: var(--rp-muted); }
+.rp-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 9px; margin-right: 6px; }
+.rp-forecast { background: var(--rp-violet-soft); border-radius: var(--rp-radius); padding: 1.4rem 1.5rem; display: flex; flex-direction: column; gap: .35rem; min-height: 100%; }
+.rp-forecast .big { font-size: clamp(1.9rem, 3vw, 2.6rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+.rp-forecast p { margin: 0; color: #55507A; font-size: .85rem; }
+.rp-forecast .rp-pill { align-self: flex-start; margin-top: auto; }
+
+/* ==========================================================================
+   Highlight + insight cards
+   ========================================================================== */
+.rp-hl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+.rp-hl { display: flex; gap: .9rem; align-items: flex-start; background: var(--rp-card); border-radius: var(--rp-radius); padding: 1.15rem 1.3rem; min-width: 0; }
+.rp-hl-icon { width: 38px; height: 38px; border-radius: 13px; flex: none; display: inline-flex; align-items: center; justify-content: center; background: var(--rp-soft); color: var(--rp-ink); }
+.rp-hl-body { min-width: 0; }
+.rp-hl-label { font-size: .78rem; font-weight: 600; color: var(--rp-muted); }
+.rp-hl-value { margin-top: .2rem; font-size: 1.05rem; font-weight: 700; color: var(--rp-ink); line-height: 1.3; overflow-wrap: anywhere; }
+.rp-hl-sub { margin-top: .2rem; font-size: .82rem; color: var(--rp-muted); }
+.rp-hl.rp-tone-positive .rp-hl-icon { background: var(--rp-lime); }
+.rp-hl.rp-tone-warning .rp-hl-icon { background: var(--rp-amber-soft); color: var(--rp-amber-ink); }
+.rp-hl.rp-tone-negative .rp-hl-icon { background: var(--rp-red-soft); color: var(--rp-red-ink); }
+
+.rp-insight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1rem; }
+.rp-insight { background: var(--rp-card); border-radius: var(--rp-radius); padding: 1.3rem 1.5rem 1.35rem; min-width: 0; }
+.rp-insight-head { min-height: 1.5rem; }
+.rp-insight h4 { margin: .55rem 0 .35rem; padding: 0; font-size: 1rem; font-weight: 700; color: var(--rp-ink); line-height: 1.35; letter-spacing: -0.01em; }
+.rp-insight p { margin: 0; font-size: .88rem; color: var(--rp-muted); line-height: 1.6; }
+
+/* ==========================================================================
+   Badges
+   ========================================================================== */
+.rp-badge { display: inline-block; font-size: .72rem; font-weight: 700; padding: .2rem .7rem; border-radius: 999px; line-height: 1.4; white-space: nowrap; }
+.rp-badge-neutral { background: var(--rp-soft); color: var(--rp-ink); }
+.rp-badge-primary { background: var(--rp-lime); color: var(--rp-ink); }
+.rp-badge-secondary { background: var(--rp-violet-soft); color: var(--rp-ink); }
+.rp-badge-light { background: var(--rp-soft); color: var(--rp-muted); }
+.rp-badge-positive { background: var(--rp-lime); color: var(--rp-ink); }
+.rp-badge-warning { background: var(--rp-amber-soft); color: var(--rp-amber-ink); }
+.rp-badge-negative { background: var(--rp-red-soft); color: var(--rp-red-ink); }
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+.rp-table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 16px; background: var(--rp-card); }
+.rp-table { width: 100%; border-collapse: collapse; font-size: .86rem; min-width: 480px; }
+.rp-table th { text-align: left; font-size: .76rem; font-weight: 600; color: var(--rp-muted); padding: .2rem .9rem .7rem; white-space: nowrap; }
+.rp-table td { padding: .75rem .9rem; border-top: 1px solid var(--rp-border); color: var(--rp-ink); font-weight: 600; max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rp-table tbody tr:hover { background: #F6F6F0; }
+.rp-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.rp-table th.num { text-align: right; }
+
+/* ==========================================================================
+   Empty state, team, footer
+   ========================================================================== */
+.rp-empty { text-align: center; padding: 3rem 1.5rem; background: var(--rp-card); border-radius: var(--rp-radius); color: var(--rp-muted); }
+.rp-empty .rp-icon { font-size: 36px; color: var(--rp-violet); }
+.rp-empty h3 { margin: .6rem 0 .25rem; font-size: 1.05rem; font-weight: 700; color: var(--rp-ink); padding: 0; }
+.rp-empty p { margin: 0; font-size: .9rem; }
+
+.rp-team { margin-top: 2.5rem; display: flex; flex-wrap: wrap; align-items: center; gap: .7rem; }
+.rp-team-head { display: flex; flex-direction: column; margin-right: .6rem; }
+.rp-team-head h3 { margin: 0; padding: 0; font-size: .92rem; font-weight: 700; color: var(--rp-ink); }
+.rp-team-head p { margin: .15rem 0 0; font-size: .8rem; color: var(--rp-muted); }
+.rp-team-grid { display: flex; flex-wrap: wrap; gap: .7rem; }
+.rp-team-card { display: flex; align-items: center; gap: .75rem; background: var(--rp-card); border-radius: 18px; padding: .65rem 1.05rem .65rem .7rem; }
+.rp-avatar { width: 34px; height: 34px; border-radius: 50%; flex: none; display: inline-flex; align-items: center; justify-content: center; background: var(--rp-lime); color: var(--rp-ink); font-weight: 700; font-size: .78rem; }
+.rp-team-name { font-size: .88rem; font-weight: 700; color: var(--rp-ink); }
+.rp-team-roll { font-size: .76rem; color: var(--rp-muted); font-variant-numeric: tabular-nums; }
+.rp-footer { margin-top: 1.5rem; text-align: left; font-size: .78rem; color: var(--rp-muted); }
+
+/* ==========================================================================
+   Streamlit widgets
+   ========================================================================== */
+[data-testid="stWidgetLabel"] p { font-size: .78rem; font-weight: 600; color: var(--rp-muted); }
+[data-testid="stTabs"] [data-baseweb="tab-list"] { gap: .25rem; }
+[data-testid="stTabs"] [data-baseweb="tab"] { height: 2.4rem; padding: 0 .9rem; font-weight: 600; }
+[data-testid="stExpander"] { border: 0; border-radius: 18px; background: var(--rp-card); }
+[data-testid="stPlotlyChart"] { width: 100% !important; }
+[data-baseweb="select"] > div, [data-testid="stDateInputField"], [data-baseweb="input"] {
+  background: var(--rp-soft) !important; border-color: transparent !important; border-radius: 14px !important;
+}
+[data-baseweb="select"] > div:hover { border-color: var(--rp-violet) !important; }
+[data-baseweb="tag"] { background: var(--rp-ink) !important; color: #fff !important; border-radius: 999px !important; }
+[data-baseweb="tag"] span, [data-baseweb="tag"] svg { color: #fff !important; fill: #fff !important; }
+[data-testid="stSegmentedControl"] { gap: 4px; }
+[data-testid="stSegmentedControl"] button, [data-testid="stButtonGroup"] button { border: 0 !important; border-radius: 999px !important; font-weight: 600; background: var(--rp-soft) !important; color: var(--rp-ink) !important; }
+[data-testid="stBaseButton-segmented_controlActive"], button[aria-checked="true"], button[aria-pressed="true"] { background: var(--rp-ink) !important; color: #fff !important; }
+[data-testid="stBaseButton-segmented_controlActive"] *, button[aria-checked="true"] *, button[aria-pressed="true"] * { color: #fff !important; }
+:focus-visible { outline: 2px solid var(--rp-violet); outline-offset: 2px; }
+
+/* ==========================================================================
+   Layout helpers (grids that reflow by themselves, no breakpoints needed)
+   ========================================================================== */
+.rp-hero { grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); }
+
+/* Cards in the same row share the same height */
+[data-testid="stHorizontalBlock"]:not(.st-key-rp-filters *) { align-items: stretch !important; }
+[data-testid="stColumn"] > [data-testid="stVerticalBlock"] { height: 100%; }
+[data-testid="stColumn"] > [data-testid="stVerticalBlock"] > [class*="st-key-rp-card-"],
+[data-testid="stColumn"] > [data-testid="stVerticalBlock"] > [data-testid="stLayoutWrapper"]:has(> [class*="st-key-rp-card-"]) { flex: 1 1 auto; }
+
+/* ==========================================================================
+   Responsive
+   Streamlit columns are switched to wrapping based on the width that is really
+   available for content: the viewport minus the sidebar when it is open.
+   Top-level rows only; nested rows (e.g. From/To dates) stay side by side.
+   ========================================================================== */
+@media (max-width: 1180px) {
+  .stApp:has([data-testid="stSidebar"][aria-expanded="true"]) .rp-forecast { min-height: 0; }
+}
+
+/* Medium: 2-column rows stack, 3-column rows become 2 + 1 */
+@media (max-width: 900px) {
+  [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"]:not(:is([data-testid="stColumn"] *)) { flex-wrap: wrap !important; gap: 1rem !important; }
+  [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"]:not(:is([data-testid="stColumn"] *)) > [data-testid="stColumn"] { flex: 1 1 100% !important; min-width: 100% !important; width: 100% !important; }
+  [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"]:not(:is([data-testid="stColumn"] *)):has(> [data-testid="stColumn"]:nth-child(3):last-child) > [data-testid="stColumn"] { flex: 1 1 calc(50% - .5rem) !important; min-width: calc(50% - .5rem) !important; width: auto !important; }
+  .rp-forecast { min-height: 0; }
+}
+@media (max-width: 1180px) {
+  .stApp:has([data-testid="stSidebar"][aria-expanded="true"]) [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"]:not(:is([data-testid="stColumn"] *)) { flex-wrap: wrap !important; gap: 1rem !important; }
+  .stApp:has([data-testid="stSidebar"][aria-expanded="true"]) [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"]:not(:is([data-testid="stColumn"] *)) > [data-testid="stColumn"] { flex: 1 1 100% !important; min-width: 100% !important; width: 100% !important; }
+  .stApp:has([data-testid="stSidebar"][aria-expanded="true"]) [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"]:not(:is([data-testid="stColumn"] *)):has(> [data-testid="stColumn"]:nth-child(3):last-child) > [data-testid="stColumn"] { flex: 1 1 calc(50% - .5rem) !important; min-width: calc(50% - .5rem) !important; width: auto !important; }
+}
+
+/* Phones: everything stacks, tighter spacing */
+@media (max-width: 640px) {
+  [data-testid="stMainBlockContainer"], .block-container { padding: 3.25rem .85rem 2rem !important; }
+  .stApp [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"]:not(:is([data-testid="stColumn"] *)):has(> [data-testid="stColumn"]) > [data-testid="stColumn"],
+  .stApp [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"]:not(:is([data-testid="stColumn"] *)):has(> [data-testid="stColumn"]:nth-child(3):last-child) > [data-testid="stColumn"],
+  .stApp:has([data-testid="stSidebar"][aria-expanded]) [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"]:not(:is([data-testid="stColumn"] *)):has(> [data-testid="stColumn"]:nth-child(3):last-child) > [data-testid="stColumn"] { flex: 1 1 100% !important; min-width: 100% !important; width: 100% !important; }
+  .rp-kpis { grid-template-columns: 1fr 1fr; gap: .7rem; }
+  .rp-kpi { padding: 1rem 1.05rem; }
+  .rp-kpi-value { font-size: 1.4rem; }
+  [class*="st-key-rp-card-"] { padding: 1rem; border-radius: 22px; }
+  .st-key-rp-filters { padding: .85rem 1rem .4rem; }
+  .rp-card-head { flex-wrap: wrap; }
+  .rp-hl-grid, .rp-insight-grid { grid-template-columns: 1fr; }
+  .rp-section { margin-top: 1.6rem; }
+  .rp-team { flex-direction: column; align-items: flex-start; }
+  .rp-table { min-width: 420px; }
+}
+@media (max-width: 380px) { .rp-kpis { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+
+/* Forecast card height matches the neighbouring chart cards when they sit side by side */
+@media (min-width: 901px) { .rp-forecast { min-height: 400px; } }
